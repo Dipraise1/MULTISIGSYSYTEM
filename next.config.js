@@ -2,7 +2,83 @@
 const webpack = require('webpack')
 
 const nextConfig = {
-  webpack: (config, { isServer }) => {
+  // Enable React strict mode for better development experience
+  reactStrictMode: true,
+  
+  // Enable swc minification for better performance
+  swcMinify: true,
+  
+  // Optimize for production builds
+  compiler: {
+    // Remove console.log in production
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  
+  // Enable experimental features for better performance
+  experimental: {
+    // Enable modern builds
+    esmExternals: true,
+    // Optimize bundle size
+    optimizeCss: true,
+    // Enable new optimizations
+    webpackBuildWorker: true,
+  },
+
+  // Image optimization configuration
+  images: {
+    domains: ['localhost', 'your-domain.com'],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+  
+  // Environment variables to expose to the client
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    BUILD_TIME: new Date().toISOString(),
+    VERSION: process.env.npm_package_version,
+  },
+  
+  // Security headers for production
+  async headers() {
+    const securityHeaders = [
+      {
+        key: 'X-DNS-Prefetch-Control',
+        value: 'on'
+      },
+      {
+        key: 'Strict-Transport-Security',
+        value: 'max-age=63072000; includeSubDomains; preload'
+      },
+      {
+        key: 'X-Frame-Options',
+        value: 'DENY'
+      },
+      {
+        key: 'X-Content-Type-Options',
+        value: 'nosniff'
+      },
+      {
+        key: 'Referrer-Policy',
+        value: 'origin-when-cross-origin'
+      },
+      {
+        key: 'Permissions-Policy',
+        value: 'camera=(), microphone=(), geolocation=()'
+      }
+    ]
+
+    return [
+      {
+        source: '/(.*)',
+        headers: securityHeaders,
+      },
+    ]
+  },
+
+  webpack: (config, { isServer, dev }) => {
+    // Client-side polyfills for Web3 compatibility
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -37,16 +113,60 @@ const nextConfig = {
       use: 'raw-loader',
     })
 
+    // Optimize bundle size in production
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+            },
+            web3: {
+              test: /[\\/]node_modules[\\/](@?web3|ethers|@solana)[\\/]/,
+              name: 'web3',
+              chunks: 'all',
+            },
+          },
+        },
+      }
+    }
+
     return config
   },
-  images: {
-    domains: ['localhost'],
+  
+  // Performance monitoring
+  async rewrites() {
+    return []
   },
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+  
+  // Redirect configuration for production
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+    ]
   },
-  // Enable strict mode for better development experience
-  reactStrictMode: true,
+  
+  // Bundle analyzer (enable with ANALYZE=true npm run build)
+  ...(process.env.ANALYZE === 'true' && {
+    webpack: (config) => {
+      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          openAnalyzer: false,
+        })
+      )
+      return config
+    },
+  }),
 }
 
 module.exports = nextConfig 
