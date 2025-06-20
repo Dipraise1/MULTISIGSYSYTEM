@@ -46,6 +46,8 @@
     "out",
     "dist",
     "coverage",
-    "typechain-types"
+    "typechain-types",
+    "scripts",
+    "deploy"
   ]
 } 

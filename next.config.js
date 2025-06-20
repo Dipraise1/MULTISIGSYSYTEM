@@ -5,9 +5,6 @@ const nextConfig = {
   // Enable React strict mode for better development experience
   reactStrictMode: true,
   
-  // Enable swc minification for better performance
-  swcMinify: true,
-  
   // Optimize for production builds
   compiler: {
     // Remove console.log in production

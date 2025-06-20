@@ -1,13 +1,11 @@
 import './globals.css'
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
 import { Providers } from '@/components/providers'
 
-const inter = Inter({ 
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-})
+// Use system fonts instead of Google Fonts for better reliability
+const inter = {
+  className: 'font-inter'
+}
 
 export const metadata: Metadata = {
   title: {

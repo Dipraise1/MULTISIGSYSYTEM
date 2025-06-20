@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useWallet } from '@/hooks/useWallet'
-import { motion } from 'framer-motion'
+// Removed framer-motion for build compatibility
 import { 
   Shield, 
   Plus, 
@@ -129,10 +129,7 @@ export function WalletDashboard() {
 
       {/* Enhanced Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+        <div
           className="metric-card"
         >
           <div className="flex items-center justify-between mb-4">
@@ -150,12 +147,9 @@ export function WalletDashboard() {
             </p>
             <p className="text-xs text-emerald-500 mt-1">+12% from last month</p>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+        <div
           className="metric-card"
         >
           <div className="flex items-center justify-between mb-4">
@@ -173,12 +167,9 @@ export function WalletDashboard() {
             </p>
             <p className="text-xs text-emerald-500 mt-1">+8.2% this week</p>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+        <div
           className="metric-card"
         >
           <div className="flex items-center justify-between mb-4">
@@ -196,12 +187,9 @@ export function WalletDashboard() {
             </p>
             <p className="text-xs text-amber-500 mt-1">3 need attention</p>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+        <div
           className="metric-card"
         >
           <div className="flex items-center justify-between mb-4">
@@ -219,7 +207,7 @@ export function WalletDashboard() {
             </p>
             <p className="text-xs text-blue-500 mt-1">24h activity</p>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Search and Filter Controls */}
@@ -259,11 +247,8 @@ export function WalletDashboard() {
       {/* Enhanced Wallets Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {filteredWallets.map((wallet, index) => (
-          <motion.div
+          <div
             key={wallet.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
             className="wallet-card"
           >
             {/* Wallet Header */}
@@ -435,15 +420,13 @@ export function WalletDashboard() {
                 <Users className="h-4 w-4" />
               </button>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
       {/* Enhanced Empty State */}
       {filteredWallets.length === 0 && wallets.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+        <div
           className="text-center py-16"
         >
           <div className="glass-card p-12 max-w-md mx-auto">
@@ -464,7 +447,7 @@ export function WalletDashboard() {
               Create Your First Wallet
             </button>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* No Search Results */}
@@ -500,4 +483,4 @@ export function WalletDashboard() {
       )}
     </div>
   )
-} 
+}
